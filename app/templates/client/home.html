@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Inicio — TecnoStore{% endblock %}
+{% block content %}
+
+<section class="hero rounded-4 p-5 mb-5 text-white">
+  <div class="row align-items-center">
+    <div class="col-md-7">
+      <h1 class="display-4 fw-bold">Tecnología que mueve tu mundo</h1>
+      <p class="lead">Smartphones, laptops, audio y más. Envío rápido y garantía oficial.</p>
+      <a href="{{ url_for('client.catalog') }}" class="btn btn-light btn-lg fw-bold">Ver catálogo <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="col-md-5 text-center"><i class="bi bi-laptop" style="font-size:10rem;opacity:.4"></i></div>
+  </div>
+</section>
+
+<h3 class="mb-3"><i class="bi bi-grid-fill text-primary"></i> Categorías</h3>
+<div class="row g-3 mb-5">
+  {% for c in categorias %}
+    <div class="col-6 col-md-2 text-center">
+      <a href="{{ url_for('client.catalog', categoria=c.id) }}" class="text-decoration-none">
+        <div class="card h-100 hover-lift">
+          <div class="card-body">
+            <i class="bi bi-tag-fill text-primary fs-1"></i>
+            <p class="mt-2 mb-0 fw-semibold text-dark">{{ c.nombre }}</p>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
+{% if ofertas %}
+<h3 class="mb-3"><i class="bi bi-fire text-danger"></i> Ofertas</h3>
+<div class="row g-3 mb-5">
+  {% for p in ofertas %}{% include "client/_product_card.html" %}{% endfor %}
+</div>
+{% endif %}
+
+<h3 class="mb-3"><i class="bi bi-star-fill text-warning"></i> Destacados</h3>
+<div class="row g-3">
+  {% for p in destacados %}{% include "client/_product_card.html" %}{% endfor %}
+</div>
+
+{% endblock %}

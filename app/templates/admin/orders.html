@@ -1,0 +1,26 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Pedidos{% endblock %}
+{% block content %}
+<h2>Pedidos</h2>
+<div class="mb-3">
+  <a href="{{ url_for('admin.orders_list') }}" class="btn btn-sm btn-outline-secondary {% if not estado %}active{% endif %}">Todos</a>
+  {% for e in ['pendiente','pagado','en_preparacion','enviado','entregado','cancelado'] %}
+    <a href="{{ url_for('admin.orders_list', estado=e) }}" class="btn btn-sm btn-outline-secondary {% if estado==e %}active{% endif %}">{{ e }}</a>
+  {% endfor %}
+</div>
+<table class="table bg-white">
+  <thead><tr><th>N°</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+  <tbody>
+  {% for p in pedidos %}
+    <tr>
+      <td><strong>{{ p.numero }}</strong></td>
+      <td>{{ p.usuario.nombre }} {{ p.usuario.apellido or '' }}</td>
+      <td>{{ p.creado_en.strftime('%d/%m/%Y %H:%M') }}</td>
+      <td>S/{{ "%.2f"|format(p.total) }}</td>
+      <td><span class="badge bg-info">{{ p.estado }}</span></td>
+      <td><a href="{{ url_for('admin.order_detail', pid=p.id) }}" class="btn btn-sm btn-outline-primary">Gestionar</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

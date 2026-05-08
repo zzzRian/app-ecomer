@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h2>Finalizar compra</h2>
+<form method="post" class="row g-4">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="col-md-7">
+    <div class="card mb-3"><div class="card-body">
+      <h5>Dirección de envío</h5>
+      {% if direcciones %}
+        <select name="direccion_id" class="form-select mb-2">
+          <option value="">— Nueva dirección —</option>
+          {% for d in direcciones %}
+            <option value="{{ d.id }}">{{ d.etiqueta }}: {{ d.calle }}, {{ d.ciudad }}</option>
+          {% endfor %}
+        </select>
+      {% endif %}
+      <div class="row g-2">
+        <div class="col-md-6"><input name="destinatario" class="form-control" placeholder="Destinatario"></div>
+        <div class="col-md-6"><input name="codigo_postal" class="form-control" placeholder="Código postal"></div>
+        <div class="col-12"><input name="calle" class="form-control" placeholder="Calle y número"></div>
+        <div class="col-md-6"><input name="ciudad" class="form-control" placeholder="Ciudad"></div>
+        <div class="col-md-6"><input name="region" class="form-control" placeholder="Región"></div>
+      </div>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <h5>Método de pago</h5>
+      <div class="form-check"><input class="form-check-input" type="radio" name="metodo_pago" value="tarjeta" checked id="m1"><label class="form-check-label" for="m1">Tarjeta de crédito/débito (simulado)</label></div>
+      <div class="form-check"><input class="form-check-input" type="radio" name="metodo_pago" value="yape" id="m2"><label class="form-check-label" for="m2">Yape / Plin</label></div>
+      <div class="form-check"><input class="form-check-input" type="radio" name="metodo_pago" value="efectivo" id="m3"><label class="form-check-label" for="m3">Efectivo contra entrega</label></div>
+    </div></div>
+  </div>
+  <div class="col-md-5">
+    <div class="card"><div class="card-body">
+      <h5>Resumen</h5>
+      <ul class="list-group list-group-flush mb-3">
+        {% for p, qty, sub in items %}
+          <li class="list-group-item d-flex justify-content-between"><span>{{ p.nombre }} × {{ qty }}</span><span>S/{{ "%.2f"|format(sub) }}</span></li>
+        {% endfor %}
+      </ul>
+      <div class="d-flex justify-content-between"><span>Subtotal</span><strong>S/{{ "%.2f"|format(total) }}</strong></div>
+      <small class="text-muted">Envío gratis sobre S/200</small>
+      <button class="btn btn-primary w-100 mt-3 btn-lg">Confirmar compra</button>
+    </div></div>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Catálogo{% endblock %}
+{% block content %}
+<div class="row">
+  <aside class="col-md-3">
+    <div class="card mb-3"><div class="card-body">
+      <h6 class="fw-bold">Filtros</h6>
+      <form>
+        <input type="hidden" name="q" value="{{ q }}">
+        <label class="form-label small">Categoría</label>
+        <select name="categoria" class="form-select form-select-sm mb-2" onchange="this.form.submit()">
+          <option value="">Todas</option>
+          {% for c in categorias %}
+            <option value="{{ c.id }}" {% if sel_cat==c.id %}selected{% endif %}>{{ c.nombre }}</option>
+          {% endfor %}
+        </select>
+        <label class="form-label small">Marca</label>
+        <select name="marca" class="form-select form-select-sm mb-2" onchange="this.form.submit()">
+          <option value="">Todas</option>
+          {% for m in marcas %}
+            <option value="{{ m.id }}" {% if sel_marca==m.id %}selected{% endif %}>{{ m.nombre }}</option>
+          {% endfor %}
+        </select>
+        <label class="form-label small">Precio</label>
+        <div class="d-flex gap-2 mb-2">
+          <input name="pmin" class="form-control form-control-sm" placeholder="Min" value="{{ request.args.get('pmin','') }}">
+          <input name="pmax" class="form-control form-control-sm" placeholder="Max" value="{{ request.args.get('pmax','') }}">
+        </div>
+        <button class="btn btn-primary btn-sm w-100">Aplicar</button>
+      </form>
+    </div></div>
+  </aside>
+  <div class="col-md-9">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">Productos {% if q %}— "{{ q }}"{% endif %}</h4>
+      <form>
+        {% for k,v in request.args.items() if k!='orden' %}<input type="hidden" name="{{k}}" value="{{v}}">{% endfor %}
+        <select name="orden" class="form-select form-select-sm" onchange="this.form.submit()">
+          <option value="nuevos" {% if orden=='nuevos' %}selected{% endif %}>Nuevos</option>
+          <option value="precio_asc" {% if orden=='precio_asc' %}selected{% endif %}>Precio ↑</option>
+          <option value="precio_desc" {% if orden=='precio_desc' %}selected{% endif %}>Precio ↓</option>
+          <option value="nombre" {% if orden=='nombre' %}selected{% endif %}>Nombre</option>
+        </select>
+      </form>
+    </div>
+    <div class="row g-3">
+      {% for p in productos.items %}{% include "client/_product_card.html" %}
+      {% else %}<p class="text-muted">No se encontraron productos.</p>{% endfor %}
+    </div>
+    {% if productos.pages > 1 %}
+    <nav class="mt-4"><ul class="pagination justify-content-center">
+      {% for n in productos.iter_pages() %}
+        {% if n %}
+          <li class="page-item {% if n==productos.page %}active{% endif %}">
+            <a class="page-link" href="?{% for k,v in request.args.items() if k!='page' %}{{k}}={{v}}&{% endfor %}page={{n}}">{{ n }}</a>
+          </li>
+        {% else %}<li class="page-item disabled"><span class="page-link">...</span></li>{% endif %}
+      {% endfor %}
+    </ul></nav>{% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Pedido {{ pedido.numero }}{% endblock %}
+{% block content %}
+<h2>Pedido {{ pedido.numero }}</h2>
+<div class="row">
+  <div class="col-md-8">
+    <table class="table bg-white">
+      <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
+      <tbody>
+      {% for d in pedido.detalles %}
+        <tr><td>{{ d.producto.nombre }}</td><td>{{ d.cantidad }}</td>
+            <td>S/{{ "%.2f"|format(d.precio_unitario) }}</td>
+            <td>S/{{ "%.2f"|format(d.subtotal) }}</td></tr>
+      {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr><th colspan="3" class="text-end">Total</th><th class="text-success">S/{{ "%.2f"|format(pedido.total) }}</th></tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="col-md-4">
+    <div class="card"><div class="card-body">
+      <h6>Cliente</h6><p>{{ pedido.usuario.nombre }} ({{ pedido.usuario.email }})</p>
+      {% if pedido.direccion %}<h6>Envío</h6><p>{{ pedido.direccion.calle }}, {{ pedido.direccion.ciudad }}</p>{% endif %}
+      <h6>Pago</h6><p>{{ pedido.metodo_pago }}</p>
+      <hr>
+      <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label class="form-label">Cambiar estado</label>
+        <select name="estado" class="form-select mb-2">
+          {% for e in ['pendiente','pagado','en_preparacion','enviado','entregado','cancelado'] %}
+            <option value="{{ e }}" {% if pedido.estado==e %}selected{% endif %}>{{ e }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-primary w-100">Actualizar</button>
+      </form>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

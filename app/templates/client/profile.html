@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Mi perfil{% endblock %}
+{% block content %}
+<h2>Editar perfil</h2>
+<form method="post" class="row g-3" style="max-width:600px">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="col-md-6"><label class="form-label">Nombre</label><input class="form-control" name="nombre" value="{{ current_user.nombre }}"></div>
+  <div class="col-md-6"><label class="form-label">Apellido</label><input class="form-control" name="apellido" value="{{ current_user.apellido or '' }}"></div>
+  <div class="col-12"><label class="form-label">Email</label><input class="form-control" value="{{ current_user.email }}" disabled></div>
+  <div class="col-md-6"><label class="form-label">Teléfono</label><input class="form-control" name="telefono" value="{{ current_user.telefono or '' }}"></div>
+  <div class="col-md-6"><label class="form-label">Nueva contraseña (opcional)</label><input type="password" class="form-control" name="password"></div>
+  <div class="col-12"><button class="btn btn-primary">Guardar cambios</button></div>
+</form>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<h2>Usuarios</h2>
+<table class="table bg-white">
+  <thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Cambiar rol</th><th></th></tr></thead>
+  <tbody>
+  {% for u in usuarios %}
+    <tr>
+      <td>{{ u.nombre }} {{ u.apellido or '' }}</td>
+      <td>{{ u.email }}</td>
+      <td><span class="badge bg-secondary">{{ u.rol.nombre }}</span></td>
+      <td>{% if u.activo %}<span class="badge bg-success">Activo</span>{% else %}<span class="badge bg-danger">Inactivo</span>{% endif %}</td>
+      <td>
+        <form action="{{ url_for('admin.user_role', uid=u.id) }}" method="post" class="d-flex gap-1">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <select name="rol_id" class="form-select form-select-sm">
+            {% for r in roles %}<option value="{{ r.id }}" {% if u.rol_id==r.id %}selected{% endif %}>{{ r.nombre }}</option>{% endfor %}
+          </select>
+          <button class="btn btn-sm btn-outline-primary">OK</button>
+        </form>
+      </td>
+      <td>
+        <form action="{{ url_for('admin.user_toggle', uid=u.id) }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-sm btn-outline-warning">{{ 'Desactivar' if u.activo else 'Activar' }}</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

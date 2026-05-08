@@ -1,0 +1,69 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Dashboard</h2>
+<div class="row g-3 my-3">
+  <div class="col-md-3"><div class="card shadow-sm"><div class="card-body">
+    <small class="text-muted">Ventas totales</small><h3 class="text-success">S/{{ "%.2f"|format(ventas_total) }}</h3>
+  </div></div></div>
+  <div class="col-md-3"><div class="card shadow-sm"><div class="card-body">
+    <small class="text-muted">Ventas del mes</small><h3 class="text-primary">S/{{ "%.2f"|format(ventas_mes) }}</h3>
+  </div></div></div>
+  <div class="col-md-3"><div class="card shadow-sm"><div class="card-body">
+    <small class="text-muted">Pedidos</small><h3>{{ pedidos_total }}</h3>
+  </div></div></div>
+  <div class="col-md-3"><div class="card shadow-sm"><div class="card-body">
+    <small class="text-muted">Clientes</small><h3>{{ clientes_total }}</h3>
+  </div></div></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-8"><div class="card shadow-sm"><div class="card-body">
+    <h5>Ventas — últimos 7 días</h5>
+    <canvas id="chart" height="100"></canvas>
+  </div></div></div>
+  <div class="col-md-4"><div class="card shadow-sm"><div class="card-body">
+    <h5>Top productos</h5>
+    <ol class="mb-0">
+      {% for p, vendidos in top_productos %}
+        <li>{{ p.nombre }} — <span class="text-muted">{{ vendidos }} u.</span></li>
+      {% else %}<li class="text-muted">Sin datos aún</li>{% endfor %}
+    </ol>
+  </div></div></div>
+
+  <div class="col-md-7"><div class="card shadow-sm"><div class="card-body">
+    <h5>Pedidos recientes</h5>
+    <table class="table table-sm">
+      <thead><tr><th>N°</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+      <tbody>
+      {% for p in pedidos_recientes %}
+        <tr><td><a href="{{ url_for('admin.order_detail', pid=p.id) }}">{{ p.numero }}</a></td>
+            <td>{{ p.usuario.nombre }}</td>
+            <td>S/{{ "%.2f"|format(p.total) }}</td>
+            <td><span class="badge bg-info">{{ p.estado }}</span></td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div></div></div>
+  <div class="col-md-5"><div class="card shadow-sm border-warning"><div class="card-body">
+    <h5 class="text-warning"><i class="bi bi-exclamation-triangle"></i> Alertas de stock bajo</h5>
+    <ul class="mb-0">
+      {% for p in stock_bajo %}
+        <li>{{ p.nombre }} — <strong>{{ p.stock }}</strong> uds (mín: {{ p.stock_minimo }})</li>
+      {% else %}<li class="text-muted">Todo OK</li>{% endfor %}
+    </ul>
+  </div></div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById('chart'), {
+  type: 'line',
+  data: {
+    labels: {{ serie|map(attribute='fecha')|list|tojson }},
+    datasets: [{ label: 'Ventas (S/)', data: {{ serie|map(attribute='total')|list|tojson }}, borderColor:'#0d6efd', tension:.3, fill:true, backgroundColor:'rgba(13,110,253,.1)' }]
+  },
+  options: { responsive: true, plugins:{legend:{display:false}} }
+});
+</script>
+{% endblock %}

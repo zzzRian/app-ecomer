@@ -1,0 +1,33 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Personal{% endblock %}
+{% block content %}
+<h2>Personal</h2>
+<div class="row g-4">
+  <div class="col-md-7">
+    <table class="table bg-white">
+      <thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Área</th></tr></thead>
+      <tbody>
+      {% for u in personal %}
+        <tr><td>{{ u.nombre }} {{ u.apellido or '' }}</td><td>{{ u.email }}</td>
+            <td><span class="badge bg-info">{{ u.rol.nombre }}</span></td><td>{{ u.area or '-' }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-5">
+    <div class="card"><div class="card-body">
+      <h5>Agregar personal</h5>
+      <form method="post" class="row g-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="col-6"><input class="form-control" name="nombre" placeholder="Nombre" required></div>
+        <div class="col-6"><input class="form-control" name="apellido" placeholder="Apellido"></div>
+        <div class="col-12"><input type="email" class="form-control" name="email" placeholder="Email" required></div>
+        <div class="col-12"><input type="password" class="form-control" name="password" placeholder="Contraseña inicial" required></div>
+        <div class="col-6"><select class="form-select" name="rol_id">{% for r in roles %}<option value="{{ r.id }}">{{ r.nombre }}</option>{% endfor %}</select></div>
+        <div class="col-6"><input class="form-control" name="area" placeholder="Área (caja, logística...)"></div>
+        <div class="col-12"><button class="btn btn-primary w-100">Crear</button></div>
+      </form>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

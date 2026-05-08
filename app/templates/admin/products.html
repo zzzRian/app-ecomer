@@ -1,0 +1,30 @@
+{% extends "admin/_layout.html" %}
+{% block title %}Productos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h2>Productos</h2>
+  <a href="{{ url_for('admin.product_new') }}" class="btn btn-primary"><i class="bi bi-plus"></i> Nuevo</a>
+</div>
+<table class="table table-hover bg-white">
+  <thead><tr><th>SKU</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th></th></tr></thead>
+  <tbody>
+  {% for p in productos %}
+    <tr>
+      <td><code>{{ p.sku }}</code></td>
+      <td>{{ p.nombre }}</td>
+      <td>{{ p.categoria.nombre if p.categoria else '-' }}</td>
+      <td>S/{{ "%.2f"|format(p.precio) }}</td>
+      <td>{% if p.stock_bajo %}<span class="text-danger fw-bold">{{ p.stock }}</span>{% else %}{{ p.stock }}{% endif %}</td>
+      <td>{% if p.activo %}<span class="badge bg-success">Activo</span>{% else %}<span class="badge bg-secondary">Inactivo</span>{% endif %}</td>
+      <td>
+        <a href="{{ url_for('admin.product_edit', pid=p.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+        <form action="{{ url_for('admin.product_delete', pid=p.id) }}" method="post" class="d-inline" onsubmit="return confirm('¿Desactivar?')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

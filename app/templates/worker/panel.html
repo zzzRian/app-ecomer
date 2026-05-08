@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Panel de logística{% endblock %}
+{% block content %}
+<h2><i class="bi bi-truck"></i> Panel de logística</h2>
+
+<h4 class="mt-4">Pedidos por preparar / enviar</h4>
+<table class="table">
+  <thead><tr><th>N°</th><th>Cliente</th><th>Dirección</th><th>Estado</th><th>Acción</th></tr></thead>
+  <tbody>
+  {% for p in pendientes %}
+    <tr>
+      <td>{{ p.numero }}</td>
+      <td>{{ p.usuario.nombre }}</td>
+      <td>{{ p.direccion.calle if p.direccion }}, {{ p.direccion.ciudad if p.direccion }}</td>
+      <td><span class="badge bg-warning">{{ p.estado }}</span></td>
+      <td>
+        <form action="{{ url_for('worker.update_shipment', pid=p.id) }}" method="post" class="d-flex gap-1">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <select name="estado" class="form-select form-select-sm">
+            <option value="en_preparacion">En preparación</option>
+            <option value="enviado">Enviado</option>
+            <option value="entregado">Entregado</option>
+          </select>
+          <button class="btn btn-sm btn-primary">OK</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}<tr><td colspan="5" class="text-muted">No hay pedidos pendientes</td></tr>{% endfor %}
+  </tbody>
+</table>
+
+<h4 class="mt-4">En camino</h4>
+<table class="table">
+  <thead><tr><th>N°</th><th>Cliente</th><th>Dirección</th><th>Acción</th></tr></thead>
+  <tbody>
+  {% for p in en_camino %}
+    <tr>
+      <td>{{ p.numero }}</td><td>{{ p.usuario.nombre }}</td>
+      <td>{{ p.direccion.calle if p.direccion }}, {{ p.direccion.ciudad if p.direccion }}</td>
+      <td>
+        <form action="{{ url_for('worker.update_shipment', pid=p.id) }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="estado" value="entregado">
+          <button class="btn btn-sm btn-success">Marcar entregado</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}<tr><td colspan="4" class="text-muted">Nada en camino</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

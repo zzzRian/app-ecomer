@@ -1,0 +1,28 @@
+/* TecnoStore — estilos personalizados */
+:root {
+  --brand: #0d6efd;
+  --brand-dark: #0a58ca;
+}
+
+body { background: #f7f8fa; }
+
+.hero {
+  background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+}
+
+.product-card { transition: transform .15s, box-shadow .15s; }
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1); }
+
+.hover-lift:hover { transform: translateY(-2px); transition: .2s; }
+
+.sidebar a.nav-link { color:#cfd6e4 !important; padding:.5rem .75rem; border-radius:.4rem; }
+.sidebar a.nav-link:hover { background: rgba(255,255,255,.08); color:#fff !important; }
+
+/* Chatbot */
+#chatbot { position: fixed; bottom: 20px; right: 20px; z-index: 1050; }
+#chatbot-toggle { width: 56px; height: 56px; font-size: 1.5rem; }
+#chatbot-window { position: absolute; bottom: 70px; right: 0; width: 340px; max-height: 500px; }
+#chatbot-messages { height: 320px; overflow-y: auto; background: #f4f6fa; }
+.msg { padding: .5rem .75rem; border-radius: 10px; margin-bottom: .4rem; max-width: 85%; font-size: .9rem; }
+.msg.bot { background: #fff; border: 1px solid #e3e6ec; }
+.msg.user { background: var(--brand); color: white; margin-left: auto; }

@@ -1,0 +1,30 @@
+<div class="col-6 col-md-3">
+  <div class="card h-100 product-card">
+    {% if p.en_oferta %}<span class="badge bg-danger position-absolute m-2">-{{ ((1 - p.precio_oferta/p.precio)*100)|round|int }}%</span>{% endif %}
+    <a href="{{ url_for('client.product_detail', pid=p.id) }}">
+      {% if p.imagen %}
+        <img src="{{ url_for('static', filename='uploads/' + p.imagen) }}" class="card-img-top p-3" style="height:180px;object-fit:contain">
+      {% else %}
+        <div class="text-center py-5 bg-light"><i class="bi bi-image text-muted" style="font-size:4rem"></i></div>
+      {% endif %}
+    </a>
+    <div class="card-body">
+      <h6 class="card-title text-truncate"><a class="text-dark text-decoration-none" href="{{ url_for('client.product_detail', pid=p.id) }}">{{ p.nombre }}</a></h6>
+      <small class="text-muted">{{ p.marca.nombre if p.marca }}</small>
+      <div class="mt-2">
+        {% if p.en_oferta %}
+          <span class="text-decoration-line-through text-muted small">S/{{ "%.2f"|format(p.precio) }}</span>
+          <strong class="text-danger fs-5 ms-1">S/{{ "%.2f"|format(p.precio_oferta) }}</strong>
+        {% else %}
+          <strong class="fs-5">S/{{ "%.2f"|format(p.precio) }}</strong>
+        {% endif %}
+      </div>
+      <form action="{{ url_for('client.cart_add', pid=p.id) }}" method="post" class="mt-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-outline-primary btn-sm w-100" {% if p.stock<=0 %}disabled{% endif %}>
+          <i class="bi bi-cart-plus"></i> {{ 'Sin stock' if p.stock<=0 else 'Agregar' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

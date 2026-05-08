@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Iniciar sesión{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card shadow"><div class="card-body p-4">
+      <h3 class="text-center mb-4"><i class="bi bi-box-arrow-in-right"></i> Iniciar sesión</h3>
+      <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" name="email" required autofocus></div>
+        <div class="mb-3"><label class="form-label">Contraseña</label><input type="password" class="form-control" name="password" required></div>
+        <div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="remember" id="r"><label class="form-check-label" for="r">Recordarme</label></div>
+        <button class="btn btn-primary w-100">Ingresar</button>
+      </form>
+      <p class="text-center mt-3 mb-0">¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate</a></p>
+      <hr>
+      <small class="text-muted d-block">Usuarios de prueba: admin@tienda.com / admin123 — cliente@tienda.com / cliente123 — trabajador@tienda.com / trabajo123</small>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

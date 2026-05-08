@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Mi cuenta{% endblock %}
+{% block content %}
+<h2>Mi cuenta</h2>
+<p>Hola, <strong>{{ current_user.nombre }}</strong> — <a href="{{ url_for('client.profile') }}">Editar perfil</a></p>
+<h4 class="mt-4">Mis pedidos</h4>
+{% if not pedidos %}<p class="text-muted">Aún no has realizado pedidos.</p>{% else %}
+<table class="table">
+  <thead><tr><th>N°</th><th>Fecha</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+  <tbody>
+  {% for p in pedidos %}
+    <tr>
+      <td>{{ p.numero }}</td>
+      <td>{{ p.creado_en.strftime('%d/%m/%Y %H:%M') }}</td>
+      <td>S/{{ "%.2f"|format(p.total) }}</td>
+      <td><span class="badge bg-{% if p.estado=='entregado' %}success{% elif p.estado=='cancelado' %}danger{% else %}info{% endif %}">{{ p.estado }}</span></td>
+      <td><a href="{{ url_for('client.order_detail', pid=p.id) }}" class="btn btn-sm btn-outline-primary">Ver</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ producto.nombre }}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-5">
+    {% if producto.imagen %}
+      <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}" class="img-fluid">
+    {% else %}
+      <div class="bg-light text-center py-5"><i class="bi bi-image fs-1 text-muted"></i></div>
+    {% endif %}
+  </div>
+  <div class="col-md-7">
+    <small class="text-muted">{{ producto.marca.nombre if producto.marca }} · {{ producto.categoria.nombre if producto.categoria }}</small>
+    <h2>{{ producto.nombre }}</h2>
+    <div class="mb-3">
+      {% if producto.en_oferta %}
+        <span class="text-decoration-line-through text-muted">S/{{ "%.2f"|format(producto.precio) }}</span>
+        <span class="text-danger fs-2 fw-bold ms-2">S/{{ "%.2f"|format(producto.precio_oferta) }}</span>
+      {% else %}
+        <span class="fs-2 fw-bold">S/{{ "%.2f"|format(producto.precio) }}</span>
+      {% endif %}
+    </div>
+    <p>{{ producto.descripcion }}</p>
+    <p><strong>Stock:</strong> {{ producto.stock }} disponibles</p>
+    <form action="{{ url_for('client.cart_add', pid=producto.id) }}" method="post" class="d-flex gap-2 mb-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="number" name="cantidad" value="1" min="1" max="{{ producto.stock }}" class="form-control" style="width:90px">
+      <button class="btn btn-primary" {% if producto.stock<=0 %}disabled{% endif %}><i class="bi bi-cart-plus"></i> Agregar al carrito</button>
+    </form>
+    {% if producto.especificaciones %}
+      <h5 class="mt-4">Especificaciones</h5>
+      <pre class="bg-light p-3 rounded small">{{ producto.especificaciones }}</pre>
+    {% endif %}
+  </div>
+</div>
+
+{% if relacionados %}
+<h4 class="mt-5 mb-3">Productos relacionados</h4>
+<div class="row g-3">
+  {% for p in relacionados %}{% include "client/_product_card.html" %}{% endfor %}
+</div>
+{% endif %}
+{% endblock %}
