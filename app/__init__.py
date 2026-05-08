@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -38,6 +39,9 @@ def create_app(config_class=Config):
     app.register_blueprint(worker_bp, url_prefix="/trabajador")
     app.register_blueprint(api_bp,    url_prefix="/api")
     app.register_blueprint(errors_bp)
+
+    # Crear carpeta uploads si no existe
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     # Context processor: cantidad en carrito y notificaciones
     from flask_login import current_user
